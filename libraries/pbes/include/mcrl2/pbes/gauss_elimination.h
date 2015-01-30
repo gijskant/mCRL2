@@ -16,6 +16,7 @@
 
 #include "mcrl2/pbes/pbes.h"
 #include "mcrl2/pbes/replace.h"
+#include "mcrl2/pbes/rewriter.h"
 #include "mcrl2/utilities/logger.h"
 
 namespace mcrl2
@@ -72,9 +73,10 @@ class gauss_elimination_algorithm
       while (i != first)
       {
         --i;
-        mCRL2log(log::verbose) << "solving equation\n  before: " << print_equation(*i);
+        mCRL2log(log::verbose) << " * solving equation " << i->variable().name() << std::endl;
+        mCRL2log(log::debug) << "solving equation\n  before: " << print_equation(*i);
         solve(*i);
-        mCRL2log(log::verbose) << "   after: " << print_equation(*i) << "\n";
+        mCRL2log(log::debug) << "   after: " << print_equation(*i) << "\n";
         for (Iter j = first; j != i; ++j)
         {
           j->formula() = ExpressionTraits::substitute(j->formula(), i->variable(), i->formula());
@@ -87,13 +89,17 @@ class gauss_elimination_algorithm
 
 /// \brief Approximation algorithm
 
-template <typename BooleanExpressionTraits, typename Compare>
+template <typename BooleanExpressionTraits, typename Compare, typename Rewr>
 struct approximate
 {
   Compare m_compare;
+  size_t m_max_iterations;
+  Rewr m_rewr;
 
-  approximate(Compare compare)
-    : m_compare(compare)
+  approximate(Compare compare, size_t max_iterations = 0, Rewr rewr = 0)
+    : m_compare(compare),
+      m_max_iterations(max_iterations),
+      m_rewr(rewr)
   {
   }
 
@@ -107,12 +113,16 @@ struct approximate
     const variable_type& X = eq.variable();
     expression_type next = eq.symbol() == tr::nu() ? tr::true_() : tr::false_();
     expression_type prev;
+    size_t i = 0;
     do
     {
+      mCRL2log(log::verbose) << "   - iteration " << i << " / " << m_max_iterations << std::endl;
       prev = next;
       next = tr::substitute(phi, X, prev);
+      if (m_rewr != 0) { next = (*m_rewr)(next); }
+      i++;
     }
-    while (!m_compare(prev, next));
+    while (!m_compare(prev, next) && (m_max_iterations==0 || i < m_max_iterations));
     eq.formula() = prev;
   }
 };

@@ -13,6 +13,7 @@
 
 #include "mcrl2/bes/gauss_elimination.h"
 #include "mcrl2/data/rewriter.h"
+#include "mcrl2/data/detail/bdd_prover.h"
 #include "mcrl2/lps/detail/test_input.h"
 #include "mcrl2/lps/linearise.h"
 #include "mcrl2/modal_formula/parse.h"
@@ -232,7 +233,18 @@ void test_approximate()
 
   gauss_elimination_algorithm<pbes_traits> algorithm;
   pbes_system::pbes p = pbes_system::txt2pbes(BES4);
-  algorithm.run(p.equations().begin(), p.equations().end(), approximate<pbes_traits, compare_function > (compare));
+
+  /// \brief Rewriter for simplifying expressions
+  data::rewriter::strategy rewrite_strategy(data::parse_rewrite_strategy("jitty"));
+  data::rewriter datar(p.data(), rewrite_strategy);
+  pbes_system::simplify_data_rewriter<data::rewriter> rewr(datar);
+
+  algorithm.run(
+      p.equations().begin(),
+      p.equations().end(),
+      approximate<pbes_traits, compare_function, pbes_system::simplify_data_rewriter<data::rewriter>* >
+        (compare, 0, &rewr)
+        );
   if (tr::is_false(p.equations().front().formula()))
   {
     std::cout << "FALSE" << std::endl;
@@ -278,9 +290,9 @@ void tutorial2()
   using namespace pbes_system;
 
   std::string txt =
-    "pbes mu X = X; \n"
+    "pbes mu X(n: Nat) = X(n + 1); \n"
     "               \n"
-    "init X;        \n"
+    "init X(0);        \n"
     ;
   pbes p = txt2pbes(txt);
   int solution = gauss_elimination(p);

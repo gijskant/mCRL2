@@ -477,6 +477,11 @@ inline const regular_formula& binary_right(const seq& x)           { return x.ri
 inline const regular_formula& binary_left(const alt& x)            { return x.left(); }
 inline const regular_formula& binary_right(const alt& x)           { return x.right(); }
 
+// template function overloads
+std::string pp(const regular_formula& x);
+std::set<data::variable> find_all_variables(const regular_formula& x);
+std::set<data::variable> find_free_variables(const regular_formula& x);
+
 } // namespace regular_formulas
 
 } // namespace mcrl2

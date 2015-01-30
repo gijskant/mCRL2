@@ -13,6 +13,9 @@
 #define MCRL2_MODAL_FORMULA_ALGORITHMS_H
 
 #include "mcrl2/lps/specification.h"
+#include "mcrl2/lps/synchronization_vector.h"
+#include "mcrl2/modal_formula/modal_equation_system.h"
+#include "mcrl2/modal_formula/state_formula.h"
 #include "mcrl2/modal_formula/state_formula_specification.h"
 #include <iostream>
 
@@ -64,6 +67,22 @@ bool is_normalized(const state_formula& x);
 
 /// \brief Returns the names of the state variables that occur in x.
 std::set<core::identifier_string> find_state_variable_names(const state_formula& x);
+
+/// \brief Computes a quotient formula for x with respect to lps (at index i) with synchronization vector v.
+/// This operation is part of a technique called partial model checking.
+state_formula quotient(const state_formula& x, const lps::specification& spec, const lps::synchronization_vector& v, size_t i);
+
+/// \brief Removes parameters from propositional variable instantiations in a pbes expression
+/// \param x A state formula
+/// \param to_be_removed A mapping that maps propositional variable names to indices of parameters that are removed
+/// \return The expression \p x with parameters removed according to the mapping \p to_be_removed
+void remove_parameters(state_formula& x, const std::map<core::identifier_string, std::vector<size_t> >& to_be_removed);
+
+/// \brief Removes parameters from propositional variable instantiations in a pbes expression
+/// \param x A state formula
+/// \param to_be_removed A mapping that maps propositional variable names to indices of parameters that are removed
+/// \return The expression \p x with parameters removed according to the mapping \p to_be_removed
+void remove_parameters(modal_equation_system& x, const std::map<core::identifier_string, std::vector<size_t> >& to_be_removed);
 
 } // namespace algorithms
 

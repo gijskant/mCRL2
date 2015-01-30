@@ -376,6 +376,35 @@ BOOST_AUTO_TEST_CASE(preprocess_nested_modal_operators_test)
   test_preprocess_nested_modal_operators("true => mu X. [a]<b>true", lpsspec, "true => mu X. [a]mu X1. <b>true");
 }
 
+BOOST_AUTO_TEST_CASE(test_vector)
+{
+  state_formulas::state_formula f1 = state_formulas::true_();
+  state_formulas::state_formula f2(data::sort_bool::not_(data::sort_bool::true_()));
+  std::vector<state_formulas::state_formula> v;
+  v.push_back(f1); v.push_back(f2);
+  for(auto it = v.begin(); it != v.end(); ++it) {
+    std::clog << " - " << (*it) << std::endl;
+  }
+
+  state_formulas::state_formula r = state_formulas::true_();
+  for(auto it = v.begin(); it != v.end(); ++it) {
+    r = state_formulas::and_(r, (*it));
+  }
+  std::clog << "result = " << r << std::endl;
+}
+
+BOOST_AUTO_TEST_CASE(test_parser_and_printer)
+{
+  specification spec;
+  std::string formula_text("exists d: Nat . (val(d < 0) || val(d + 1 == 5))");
+  std::clog << "Parsing formula: " << formula_text << std::endl;
+  state_formula f = parse_state_formula(formula_text, spec);
+  std::string formula_pp = state_formulas::pp(f);
+  std::clog << "Printing parsed formula: " << formula_pp << std::endl;
+  state_formula f2 = parse_state_formula(formula_pp, spec);
+  std::clog << "Interpreted formula: " << pp(f2) << std::endl;
+}
+
 BOOST_AUTO_TEST_CASE(parse_modal_formula_test)
 {
   const std::string text =

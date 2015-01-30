@@ -12,18 +12,13 @@
 #ifndef MCRL2_PBES_DETAIL_TERM_TRAITS_OPTIMIZED_H
 #define MCRL2_PBES_DETAIL_TERM_TRAITS_OPTIMIZED_H
 
+#include "mcrl2/core/term_traits.h"
 #include "mcrl2/data/optimized_boolean_operators.h"
 #include "mcrl2/pbes/pbes_expression.h"
 
 namespace mcrl2 {
 
 namespace core {
-
-/// \brief Contains type information for terms.
-template <typename T>
-struct term_traits_optimized
-{
-};
 
 /// \brief Contains type information for pbes expressions.
 template <>

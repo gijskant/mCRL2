@@ -17,8 +17,11 @@
 #include "mcrl2/modal_formula/normalize_sorts.h"
 #include "mcrl2/modal_formula/parse.h"
 #include "mcrl2/modal_formula/print.h"
+#include "mcrl2/modal_formula/quotienting.h"
+#include "mcrl2/modal_formula/remove_parameters.h"
 #include "mcrl2/modal_formula/replace.h"
 #include "mcrl2/modal_formula/translate_user_notation.h"
+#include "mcrl2/modal_formula/detail/action_formula_in.h"
 
 namespace mcrl2
 {
@@ -41,6 +44,18 @@ std::string pp(const action_formulas::true_& x) { return action_formulas::pp< ac
 std::set<data::variable> find_all_variables(const action_formulas::action_formula& x) { return action_formulas::find_all_variables< action_formulas::action_formula >(x); }
 //--- end generated action_formulas overloads ---//
 
+namespace detail
+{
+
+data::data_expression in(const process::action& a, const action_formulas::action_formula& x, data::set_identifier_generator& id_generator)
+{
+  detail::apply_in_traverser<in_traverser> f(a, id_generator);
+  f.apply(x);
+  return f.top();
+}
+
+} // namespace detail
+
 } // namespace action_formulas
 
 namespace regular_formulas
@@ -53,6 +68,8 @@ std::string pp(const regular_formulas::seq& x) { return regular_formulas::pp< re
 std::string pp(const regular_formulas::trans& x) { return regular_formulas::pp< regular_formulas::trans >(x); }
 std::string pp(const regular_formulas::trans_or_nil& x) { return regular_formulas::pp< regular_formulas::trans_or_nil >(x); }
 std::string pp(const regular_formulas::untyped_regular_formula& x) { return regular_formulas::pp< regular_formulas::untyped_regular_formula >(x); }
+std::set<data::variable> find_all_variables(const regular_formulas::regular_formula& x) { return regular_formulas::find_all_variables< regular_formulas::regular_formula >(x); }
+std::set<data::variable> find_free_variables(const regular_formulas::regular_formula& x) { return regular_formulas::find_free_variables< regular_formulas::regular_formula >(x); }
 //--- end generated regular_formulas overloads ---//
 
 } // namespace regular_formulas
@@ -87,6 +104,46 @@ std::set<data::variable> find_all_variables(const state_formulas::state_formula&
 std::set<data::variable> find_free_variables(const state_formulas::state_formula& x) { return state_formulas::find_free_variables< state_formulas::state_formula >(x); }
 std::set<core::identifier_string> find_identifiers(const state_formulas::state_formula& x) { return state_formulas::find_identifiers< state_formulas::state_formula >(x); }
 //--- end generated state_formulas overloads ---//
+
+std::string pp(const state_formulas::fixpoint_symbol& x)
+{
+  return x.is_mu() ? "mu" : "nu";
+}
+
+std::string pp(const state_formulas::modal_equation& x)
+{
+  std::ostringstream s;
+  s << pp(x.symbol()) << " " << x.name();
+  if (x.parameters().size() > 0)
+  {
+    s << "(";
+    for (auto p = x.parameters().begin(); p != x.parameters().end(); ++p)
+    {
+      if (p != x.parameters().begin())
+      {
+        s << ", ";
+      }
+      s << p->name();
+      s << ": ";
+      s << data::pp(p->sort());
+    }
+    s << ")";
+  }
+  s << " = " << pp(x.formula());
+  return s.str();
+}
+
+std::string pp(const state_formulas::modal_equation_system& x)
+{
+  std::ostringstream s;
+  std::vector<modal_equation> equations = x.equations();
+  for(auto e = equations.begin(); e != equations.end(); ++e)
+  {
+    s << pp(*e) << ";" << std::endl;
+  }
+  s << "init " << pp(x.initial_state()) << ";";
+  return s.str();
+}
 
 namespace algorithms {
 
@@ -143,6 +200,21 @@ bool is_timed(const state_formula& x)
 std::set<core::identifier_string> find_state_variable_names(const state_formula& x)
 {
   return state_formulas::find_state_variable_names(x);
+}
+
+state_formula quotient(const state_formula& x, const lps::specification& spec, const lps::synchronization_vector& v, size_t i)
+{
+  return state_formulas::quotient(x, spec, v, i);
+}
+
+void remove_parameters(state_formula& x, const std::map<core::identifier_string, std::vector<size_t> >& to_be_removed)
+{
+  state_formulas::remove_parameters(x, to_be_removed);
+}
+
+void remove_parameters(modal_equation_system& x, const std::map<core::identifier_string, std::vector<size_t> >& to_be_removed)
+{
+  state_formulas::remove_parameters(x, to_be_removed);
 }
 
 } // namespace algorithms

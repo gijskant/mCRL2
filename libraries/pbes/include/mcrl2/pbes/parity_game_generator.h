@@ -14,6 +14,7 @@
 
 #include "mcrl2/atermpp/aterm_list.h"
 #include "mcrl2/data/enumerator.h"
+#include "mcrl2/data/data_expression.h"
 #include "mcrl2/data/selection.h"
 #include "mcrl2/pbes/algorithms.h"
 #include "mcrl2/pbes/detail/bes_equation_limit.h"
@@ -403,6 +404,12 @@ class parity_game_generator
 
       // expand the right hand side if needed
       psi = expand_rhs(psi);
+
+      if (is_data(psi))
+      {
+	psi = datar(data::data_expression(psi));
+	mCRL2log(log::debug, "parity_game_generator") << std::endl << "Expression rewritten to " << psi << std::endl;
+      }
 
       // top_flatten
       if (is_propositional_variable_instantiation(psi))

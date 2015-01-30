@@ -24,6 +24,12 @@ struct term_traits
 {
 };
 
+/// \brief Contains type information for terms.
+template <typename T>
+struct term_traits_optimized
+{
+};
+
 } // namespace core
 
 } // namespace mcrl2

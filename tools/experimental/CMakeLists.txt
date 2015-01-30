@@ -1,6 +1,9 @@
 set(MCRL2_TOOLS
   besconvert
   complps2pbes
+  formulaparelm
+  formulaquotient
+  formularewr
   lpsrealelm
   lpssymbolicbisim
   network2lts
