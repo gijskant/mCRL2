@@ -9,6 +9,7 @@ add_mcrl2_library(lts
     liblts_lts.cpp
     liblts_dot.cpp
     liblts.cpp
+    network_explore.cpp
     tree_set.cpp
     sim_hashtable.cpp
     exploration.cpp

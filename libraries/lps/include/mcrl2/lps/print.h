@@ -16,6 +16,7 @@
 #include "mcrl2/data/parse.h"
 #include "mcrl2/lps/traverser.h"
 #include "mcrl2/process/print.h"
+#include "mcrl2/lps/synchronization_vector.h"
 
 namespace mcrl2
 {
@@ -318,6 +319,39 @@ struct printer: public lps::add_traverser_sort_expressions<process::detail::prin
     derived().print(")");
     derived().leave(x);
   } */
+
+  // used for synchronization vector entries
+  void operator()(const std::pair<std::vector<std::string>, process::action_label >& x)
+  {
+    derived().print("(");
+    print_list(x.first, "", ", ", ", ", false);
+    std::vector<process::action_label> action_decl;
+    action_decl.push_back(x.second);
+    print_action_declarations(action_decl, "", "");
+    derived().print(")");
+  }
+
+  void operator()(const lps::synchronization_vector &x)
+  {
+    derived().enter(x);
+    bool first = true;
+    for (auto it = x.vector().begin(); it != x.vector().end(); ++it)
+    {
+      if (!first)
+      {
+        derived().print(", ");
+      }
+      first = false;
+      derived()(*it);
+    }
+    derived().leave(x);
+  }
+
+  void operator()(const std::string& x)
+  {
+    derived().print(x);
+  }
+
 };
 
 } // namespace detail

@@ -5,8 +5,10 @@ add_mcrl2_library(lps
     tools.cpp
     linearise.cpp
     lpsparunfoldlib.cpp
+    network.cpp
     next_state_generator.cpp
     simulation.cpp
+    synchronization_vector.cpp
   DEPENDS
     mcrl2_core
     mcrl2_data

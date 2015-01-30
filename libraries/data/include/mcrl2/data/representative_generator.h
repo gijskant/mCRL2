@@ -15,6 +15,8 @@
 #include <algorithm>
 #include <functional>
 
+#include <boost/iterator/filter_iterator.hpp>
+
 #include "mcrl2/data/data_specification.h"
 #include "mcrl2/utilities/exception.h"
 

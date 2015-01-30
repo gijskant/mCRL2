@@ -4781,6 +4781,12 @@ class specification_basic_type
         global_variables.insert(newVariable);
         return newVariable;
       }
+      if (is_function_sort(s))
+      {
+        data_expression repr = representative_generator(data)(s);
+        mCRL2log(log::debug) << "representative for sort " << pp(s) << std::flush;
+        mCRL2log(log::debug) << ": " << pp(repr) << "(" << repr << ")" << std::endl;
+      }
       return representative_generator(data)(s);
     }
 

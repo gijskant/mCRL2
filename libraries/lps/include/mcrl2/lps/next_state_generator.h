@@ -297,6 +297,12 @@ class next_state_generator
       return m_all_summands;
     }
 
+    /// \brief Returns the substitution
+    substitution_t& substitution()
+    {
+      return m_substitution;
+    }
+
     // Calculate the set of states with associated probabilities from a symbolic state
     // and an associated stochastic distribution for the free variables in that state.
     // The result is a list of closed states with associated probabilities.

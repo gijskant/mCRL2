@@ -3,6 +3,7 @@ set(MCRL2_TOOLS
   complps2pbes
   lpsrealelm
   lpssymbolicbisim
+  network2lts
   pbesabsinthe
   pbespareqelm
   pbessymbolicbisim
