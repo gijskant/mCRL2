@@ -3,3 +3,26 @@ build/SourceVersion
 
 # Compiled byte-code for Python.
 *.pyc
+
+mcrl2-testoutput/
+build/
+stage/
+*.gz
+Makefile
+*.cmake
+CMakeFiles/
+/libraries/utilities/mcrl2/utilities/toolset_version_const.h
+/README.txt
+/libraries/trace/empty.cpp
+/libraries/lts/source/fsm_syntax.c
+/libraries/core/source/mcrl2_syntax.c
+/libraries/bes/source/pg_syntax.c
+/install_manifest.txt
+/COPYING.txt
+/CMakeCache.txt
+/tests
+.project
+.cproject
+.settings
+.idea
+
