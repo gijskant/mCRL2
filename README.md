@@ -2,6 +2,12 @@
   <img src="https://mcrl2.org/web/user_manual/_static/mcrl2.png" >
 </p>
 
+[![Build Status](https://travis-ci.org/gijskant/mCRL2.svg?branch=partial-model-checking)](https://travis-ci.org/gijskant/mCRL2/branches)
+
+> This is a fork of the official mCRL2 repository at <https://github.com/mCRL2org/mCRL2>.
+> In this fork, an experimental *partial model checking* tool `formulaquotient` is added to the toolset.
+> Read more about the tool in the [partial model checking](https://github.com/gijskant/partial-model-checking) repository.
+
 mCRL2 is a formal specification language with an associated toolset. The toolset
 can be used for modelling, validation and verification of concurrent systems and
 protocols. It can be run on Windows, Linux and macOS.
